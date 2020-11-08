@@ -1,9 +1,9 @@
 package com.weblog.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,46 +11,52 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * user
- * @author 
+ * @author G
+ * @version 1.0
+ * @date 2020/11/7 23:19
  */
 public class User implements UserDetails {
     /**
-     * 自增id
+     * 账号id
      */
     private Integer id;
-
     /**
      * 昵称
      */
     private String nickName;
-
     /**
      * 用户名
      */
     private String username;
-
     /**
-     * 用户密码
+     * 密码
      */
     private String password;
-
     /**
      * 注册时间
      */
     private Date regtime;
-
     /**
      * 头像
      */
     private String avatar;
+    /**
+     * 账号状态，1可用，0封禁
+     */
+    private boolean enabled;
 
     /**
-     * admin管理员，user普通用户
+     * 当前用户的所有权限角色信息
      */
-    private String role;
+    private List<Role> roles;
 
-    private static final long serialVersionUID = 1L;
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
+    }
 
     public Integer getId() {
         return id;
@@ -68,6 +74,7 @@ public class User implements UserDetails {
         this.nickName = nickName;
     }
 
+    @Override
     public String getUsername() {
         return username;
     }
@@ -76,6 +83,8 @@ public class User implements UserDetails {
         this.username = username;
     }
 
+    @JsonIgnore
+    @Override
     public String getPassword() {
         return password;
     }
@@ -100,38 +109,40 @@ public class User implements UserDetails {
         this.avatar = avatar;
     }
 
-    public String getRole() {
-        return role;
+    @Override
+    public boolean isEnabled() {
+        return enabled;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
+    /**
+     *
+     * @return 权限列表
+     */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<SimpleGrantedAuthority> authorities=new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority("ROLE_"+role));
+        List<GrantedAuthority> authorities=new ArrayList<>();
+        for(Role role:roles){
+            authorities.add(new SimpleGrantedAuthority(role.getName()));
+        }
         return authorities;
     }
-
+    @JsonIgnore
     @Override
     public boolean isAccountNonExpired() {
         return true;
     }
-
+    @JsonIgnore
     @Override
     public boolean isAccountNonLocked() {
         return true;
     }
-
+    @JsonIgnore
     @Override
     public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
         return true;
     }
 }

@@ -39,7 +39,7 @@ public class UserController {
         return result;
     }*/
 
-    @PostMapping("/register")
+/*    @PostMapping("/register")
     public Result register(User user){
         try {
             int i = userServiceImpl.register(user);
@@ -57,5 +57,5 @@ public class UserController {
             result.setMsg("注册失败");
         }
         return result;
-    }
+    }*/
 }

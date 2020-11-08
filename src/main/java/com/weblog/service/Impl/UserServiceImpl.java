@@ -1,15 +1,17 @@
 package com.weblog.service.Impl;
 
-import com.weblog.domain.Article;
+import com.weblog.domain.Role;
 import com.weblog.domain.User;
-import com.weblog.domain.UserExample;
+import com.weblog.mapper.RoleMapper;
 import com.weblog.mapper.UserMapper;
 import com.weblog.service.UserServie;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.DigestUtils;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -20,11 +22,31 @@ import java.util.List;
  * @date 2020/10/6 13:08
  */
 @Service
-public class UserServiceImpl implements UserServie {
+public class UserServiceImpl implements UserServie, UserDetailsService {
     @Autowired
     UserMapper userMapper;
+    @Autowired
+    RoleMapper roleMapper;
 
     /**
+     * 实现UserDetailsService接口，查询用户
+     *
+     * @param s
+     * @return
+     * @throws UsernameNotFoundException
+     */
+    @Override
+    public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
+        User user = userMapper.selectByUsername(s);
+        if (user == null)
+            //返回一个空的User
+            throw new UsernameNotFoundException("账号不存在");
+        List<Role> roles=roleMapper.getRolesByUserId(user.getId());
+        user.setRoles(roles);
+        return user;
+    }
+    /**
+     * 登录
      * @param user
      * @return -1用户名不存在，1登录成功，0密码错误
      */
@@ -50,7 +72,7 @@ public class UserServiceImpl implements UserServie {
      * @param user
      * @return
      */
-    @Override
+/*    @Override
     @Transactional(rollbackFor = Exception.class)
     public int register(User user) {
         //用户名查重
@@ -71,8 +93,7 @@ public class UserServiceImpl implements UserServie {
         Timestamp time = new Timestamp(System.currentTimeMillis());
         user.setRegtime(time);
         return userMapper.insertSelective(user);
-    }
-
+    }*/
 
 
 }

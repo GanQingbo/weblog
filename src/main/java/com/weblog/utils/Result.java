@@ -12,8 +12,8 @@ import org.springframework.stereotype.Component;
 public class Result {
     //0失败，1成功，-1不知道
     private int code;
-    private Object data;
     private String msg;
+    private Object data;
 
     public int getCode() {
         return code;
@@ -39,7 +39,7 @@ public class Result {
         this.msg = msg;
     }
 
-    public Result(int code,Object data, String msg) {
+    public Result(int code, String msg,Object data) {
         this.code = code;
         this.data = data;
         this.msg = msg;
@@ -48,7 +48,21 @@ public class Result {
     public Result() {
     }
 
-    public static Result result(int code,Object object, String msg){
-        return new Result(code,object,msg);
+    public static Result result(int code, String msg,Object data){
+        return new Result(code,msg,data);
+    }
+    public static Result success(String msg,Object data){
+        Result result=new Result();
+        result.setCode(1);
+        result.setMsg(msg);
+        result.setData(data);
+        return result;
+    }
+    public static Result failure(String msg,Object data){
+        Result result=new Result();
+        result.setCode(0);
+        result.setMsg(msg);
+        result.setData(data);
+        return result;
     }
 }

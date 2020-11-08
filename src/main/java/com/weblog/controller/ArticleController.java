@@ -1,7 +1,5 @@
 package com.weblog.controller;
 
-import com.weblog.domain.Article;
-import com.weblog.service.Impl.ArticleServiceImpl;
 import com.weblog.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/article")
 public class ArticleController {
-    @Autowired
+   /* @Autowired
     ArticleServiceImpl articleServiceImpl;
     @Autowired
     Result result;
@@ -29,5 +27,5 @@ public class ArticleController {
             result.setMsg("新增文章失败");
         }
         return result;
-    }
+    }*/
 }
